@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookProject.Controllers
 {
     [Route("characterreview")]
-    public class CharacterReview : ControllerBase
+    [ApiController]
+    public class CharacterReviewController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public CharacterReview(ApplicationDBContext context)
+        public CharacterReviewController(ApplicationDBContext context)
         {
             _context = context;
         }

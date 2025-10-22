@@ -17,6 +17,9 @@
 
         public ICollection<Scene> Scenes { get; set; } = new List<Scene>();
 
+        public ICollection<BookReview> Reviews { get; set; } = new List<BookReview>();
+
+
 
     }
 }

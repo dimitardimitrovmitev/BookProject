@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookProject.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250827171919_init")]
-    partial class init
+    [Migration("20251022200504_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,6 +55,37 @@ namespace BookProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("BookProject.Models.BookReview", b =>
+                {
+                    b.Property<int>("BookReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookReviewId"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookReviewId");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId", "BookId")
+                        .IsUnique();
+
+                    b.ToTable("BookReviews");
                 });
 
             modelBuilder.Entity("BookProject.Models.Character", b =>
@@ -100,9 +131,6 @@ namespace BookProject.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReviewId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ReviewText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -114,7 +142,8 @@ namespace BookProject.Migrations
 
                     b.HasIndex("CharacterId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "CharacterId")
+                        .IsUnique();
 
                     b.ToTable("CharacterReviews");
                 });
@@ -134,6 +163,10 @@ namespace BookProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SceneId")
                         .HasColumnType("int");
 
@@ -147,6 +180,26 @@ namespace BookProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ImageGenerations");
+                });
+
+            modelBuilder.Entity("BookProject.Models.ImageGenerationCharacter", b =>
+                {
+                    b.Property<int>("ImageGenerationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CharacterId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("ImageGenerationId", "CharacterId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.HasIndex("CharacterId1");
+
+                    b.ToTable("ImageGenerationCharacters");
                 });
 
             modelBuilder.Entity("BookProject.Models.Report", b =>
@@ -216,23 +269,18 @@ namespace BookProject.Migrations
 
             modelBuilder.Entity("BookProject.Models.SceneCharacter", b =>
                 {
-                    b.Property<int>("SceneCharacterId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("SceneId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SceneCharacterId"));
 
                     b.Property<int>("CharacterId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SceneId")
+                    b.Property<int>("SceneCharacterId")
                         .HasColumnType("int");
 
-                    b.HasKey("SceneCharacterId");
+                    b.HasKey("SceneId", "CharacterId");
 
                     b.HasIndex("CharacterId");
-
-                    b.HasIndex("SceneId");
 
                     b.ToTable("SceneCharacters");
                 });
@@ -264,25 +312,48 @@ namespace BookProject.Migrations
 
             modelBuilder.Entity("BookProject.Models.UserBook", b =>
                 {
-                    b.Property<int>("UserBookId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserBookId"));
 
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ReadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserBookId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserBookId");
+                    b.Property<float?>("UserRating")
+                        .HasColumnType("real");
+
+                    b.HasKey("UserId", "BookId");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserBooks");
+                });
+
+            modelBuilder.Entity("BookProject.Models.BookReview", b =>
+                {
+                    b.HasOne("BookProject.Models.Book", "Book")
+                        .WithMany("Reviews")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookProject.Models.User", "User")
+                        .WithMany("BookReviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BookProject.Models.Character", b =>
@@ -305,7 +376,7 @@ namespace BookProject.Migrations
                         .IsRequired();
 
                     b.HasOne("BookProject.Models.User", "User")
-                        .WithMany("Reviews")
+                        .WithMany("CharacterReviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -332,6 +403,29 @@ namespace BookProject.Migrations
                     b.Navigation("Scene");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BookProject.Models.ImageGenerationCharacter", b =>
+                {
+                    b.HasOne("BookProject.Models.Character", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookProject.Models.Character", null)
+                        .WithMany("ImageGenerationCharacters")
+                        .HasForeignKey("CharacterId1");
+
+                    b.HasOne("BookProject.Models.ImageGeneration", "ImageGeneration")
+                        .WithMany("ImageGenerationCharacters")
+                        .HasForeignKey("ImageGenerationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Character");
+
+                    b.Navigation("ImageGeneration");
                 });
 
             modelBuilder.Entity("BookProject.Models.Report", b =>
@@ -402,12 +496,21 @@ namespace BookProject.Migrations
                 {
                     b.Navigation("Characters");
 
+                    b.Navigation("Reviews");
+
                     b.Navigation("Scenes");
                 });
 
             modelBuilder.Entity("BookProject.Models.Character", b =>
                 {
+                    b.Navigation("ImageGenerationCharacters");
+
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("BookProject.Models.ImageGeneration", b =>
+                {
+                    b.Navigation("ImageGenerationCharacters");
                 });
 
             modelBuilder.Entity("BookProject.Models.Scene", b =>
@@ -419,11 +522,13 @@ namespace BookProject.Migrations
 
             modelBuilder.Entity("BookProject.Models.User", b =>
                 {
+                    b.Navigation("BookReviews");
+
+                    b.Navigation("CharacterReviews");
+
                     b.Navigation("Generations");
 
                     b.Navigation("Reports");
-
-                    b.Navigation("Reviews");
 
                     b.Navigation("Scenes");
 

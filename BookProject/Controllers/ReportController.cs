@@ -5,6 +5,7 @@ namespace BookProject.Controllers
 {
 
     [Route("report")]
+    [ApiController]
     public class ReportController : ControllerBase  
     {
         private readonly ApplicationDBContext _context;

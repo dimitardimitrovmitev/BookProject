@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookProject.Controllers
 {
     [Route("user")]
+    [ApiController]
     public class UserController : ControllerBase
     {
         private readonly ApplicationDBContext _context;

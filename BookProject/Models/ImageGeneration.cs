@@ -11,5 +11,11 @@
 
         public User User { get; set; } = null!;
         public Scene Scene { get; set; } = null!;
+
+        public string Prompt { get; set; } = null!;
+
+
+        public ICollection<ImageGenerationCharacter> ImageGenerationCharacters { get; set; } = new List<ImageGenerationCharacter>();
+
     }
 }

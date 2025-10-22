@@ -12,12 +12,11 @@ namespace BookProject.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
         private readonly IBookRepository _bookRepo;
-        public BookController(ApplicationDBContext context, IBookRepository bookRepo)
+        public BookController(IBookRepository bookRepo)
         {
             _bookRepo = bookRepo;
-            _context = context;
+           
         }
 
         [HttpGet]
@@ -27,7 +26,7 @@ namespace BookProject.Controllers
 
             var bookDto = books.Select(s => s.ToReadDTO());
 
-            return Ok(books);
+            return Ok(bookDto);
         }
 
         [HttpGet("{id}")]
@@ -47,7 +46,7 @@ namespace BookProject.Controllers
 
             await _bookRepo.AddBookAsync(bookModel);
 
-            return CreatedAtAction(nameof(GetBookById), new { id = bookModel.Id }, bookModel);
+            return CreatedAtAction(nameof(GetBookById), new { id = bookModel.Id }, bookModel.ToReadDTO());
         }
 
         [HttpPut]
@@ -56,7 +55,7 @@ namespace BookProject.Controllers
         {
             var bookModel = await _bookRepo.UpdateBookAsync(id, bookDto);
 
-            if (bookModel == null) return NotFound();
+            if (bookModel is null) return NotFound();
 
             return Ok(bookModel.ToReadDTO());
         }
@@ -68,7 +67,7 @@ namespace BookProject.Controllers
         {
             var bookModel = await _bookRepo.DeleteBookAsync(id);
 
-            if (bookModel == null) return NotFound();
+            if (bookModel is null) return NotFound();
 
             return NoContent();
         }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookProject.Controllers
 {
     [Route("scene")]
+    [ApiController]
     public class SceneController : ControllerBase
     {
         private readonly ApplicationDBContext _context;

@@ -8,7 +8,9 @@
         public string PasswordHash { get; set; } = null!;
 
         public ICollection<UserBook> UserBooks { get; set; } = new List<UserBook>();
-        public ICollection<CharacterReview> Reviews { get; set; } = new List<CharacterReview>();
+        public ICollection<CharacterReview> CharacterReviews { get; set; } = new List<CharacterReview>();
+
+        public ICollection<BookReview> BookReviews { get; set; } = new List<BookReview>();
         public ICollection<Scene> Scenes { get; set; } = new List<Scene>();
         public ICollection<ImageGeneration> Generations { get; set; } = new List<ImageGeneration>();
         public ICollection<Report> Reports { get; set; } = new List<Report>();

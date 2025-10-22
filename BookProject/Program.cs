@@ -1,6 +1,7 @@
 using BookProject.Data;
 using BookProject.Interfaces;
 using BookProject.Repositories;
+using BookProject.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,10 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 });
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
+builder.Services.AddScoped<IImageGenerationRepository, ImageGenerationRepository>();
+
+builder.Services.AddHttpClient<ImageGenerationService>();
 
 var app = builder.Build();
 

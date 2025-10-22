@@ -3,7 +3,6 @@
     public class CharacterReview
     {
         public int CharacterReviewId { get; set; }
-        public int ReviewId { get; set; }
         public int CharacterId { get; set; }
         public int UserId { get; set; }
 
