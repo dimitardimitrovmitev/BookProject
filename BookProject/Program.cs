@@ -21,7 +21,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<IImageGenerationRepository, ImageGenerationRepository>();
-
+builder.Services.AddScoped<ISceneRepository, SceneRepository>();
 builder.Services.AddHttpClient<ImageGenerationService>();
 
 var app = builder.Build();

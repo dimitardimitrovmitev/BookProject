@@ -35,9 +35,9 @@ namespace BookProject.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetGeneration([FromRoute] int id)
+        public async Task<IActionResult> GetGeneration([FromRoute] int id)
         {
-            var generation = _imageRepo.GetGenerationByIdAsync(id).Result;
+            var generation = await _imageRepo.GetGenerationByIdAsync(id);
             if (generation is null) return NotFound();
             
             return Ok(generation);
