@@ -12,13 +12,11 @@ namespace BookProject.Controllers
     [Route("imagegeneration")]
     public class ImageGenerationController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
         private readonly ImageGenerationService _imageService;
         private readonly IWebHostEnvironment _env;
         private readonly IImageGenerationRepository _imageRepo;
-        public ImageGenerationController(ApplicationDBContext context, ImageGenerationService imageService, IWebHostEnvironment env, IImageGenerationRepository imageRepo)
+        public ImageGenerationController(ImageGenerationService imageService, IWebHostEnvironment env, IImageGenerationRepository imageRepo)
         {
-            _context = context;
             _imageService = imageService;
             _env = env;
             _imageRepo = imageRepo;
@@ -71,14 +69,14 @@ namespace BookProject.Controllers
 
             var outputFolder = Path.Combine(_env.WebRootPath ?? "wwwroot", "generated");
 
-            // Include characterIds now
+            
             var imageRecord = await _imageRepo.GenerateAndSaveAsync(
                 request.UserId,
                 request.SceneId,
                 request.Prompt,
                 outputFolder,
                 _imageService,
-                request.CharacterIds   // ← pass them through
+                request.CharacterIds
             );
 
             return Ok(new
@@ -86,9 +84,8 @@ namespace BookProject.Controllers
                 id = imageRecord.ImageGenerationId,
                 url = imageRecord.ImageUrl,
                 generatedAt = imageRecord.GeneratedAt,
-                characters = request.CharacterIds    // optional, just for response context
+                characters = request.CharacterIds
             });
         }
-
     }
 }

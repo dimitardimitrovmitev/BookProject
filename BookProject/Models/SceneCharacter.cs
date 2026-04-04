@@ -2,7 +2,6 @@
 {
     public class SceneCharacter
     {
-        public int SceneCharacterId { get; set; }
         public int SceneId { get; set; }
         public int CharacterId { get; set; }
 

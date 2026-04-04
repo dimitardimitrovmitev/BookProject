@@ -30,11 +30,11 @@ namespace BookProject.Repositories
                 GeneratedAt = DateTime.UtcNow
             };
 
-            // 1️⃣ Add and save the ImageGeneration first so it gets an ID
+          
             _context.ImageGenerations.Add(imageRecord);
             await _context.SaveChangesAsync();
 
-            // 2️⃣ Now safely link characters using the generated ID
+          
             if (characterIds != null && characterIds.Any())
             {
                 foreach (var charId in characterIds)

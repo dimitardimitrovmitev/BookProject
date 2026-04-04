@@ -22,6 +22,12 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<IImageGenerationRepository, ImageGenerationRepository>();
 builder.Services.AddScoped<ISceneRepository, SceneRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<ICharacterReviewRepository, CharacterReviewRepository>();
+builder.Services.AddScoped<IBookReviewRepository, BookReviewRepository>();
+
+
 builder.Services.AddHttpClient<ImageGenerationService>();
 
 var app = builder.Build();

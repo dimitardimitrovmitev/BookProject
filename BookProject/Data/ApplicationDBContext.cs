@@ -64,8 +64,9 @@ namespace BookProject.Data
 
             modelBuilder.Entity<SceneCharacter>()
                 .HasOne(sc => sc.Character)
-                .WithMany()
-                .HasForeignKey(sc => sc.CharacterId);
+                .WithMany(c => c.SceneCharacters)
+                .HasForeignKey(sc => sc.CharacterId)
+                .OnDelete(DeleteBehavior.NoAction); 
 
             // USERBOOK (many-to-many join with composite key)
             modelBuilder.Entity<UserBook>()
@@ -103,8 +104,9 @@ namespace BookProject.Data
 
             modelBuilder.Entity<ImageGenerationCharacter>()
                 .HasOne(igc => igc.Character)
-                .WithMany()
-                .HasForeignKey(igc => igc.CharacterId);
+                .WithMany(c => c.ImageGenerationCharacters)
+                .HasForeignKey(igc => igc.CharacterId)
+                .OnDelete(DeleteBehavior.NoAction); // avoid cascade conflicts
         }
     }
 }

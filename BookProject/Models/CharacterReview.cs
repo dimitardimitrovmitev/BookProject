@@ -7,7 +7,7 @@
         public int UserId { get; set; }
 
         public string ReviewText { get; set; } = null!;
-        public int Rating { get; set; } // 1–5 stars
+        public int Rating { get; set; }
 
         public Character Character { get; set; } = null!;
         public User User { get; set; } = null!;

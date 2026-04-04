@@ -12,6 +12,9 @@
         public Book Book { get; set; } = null!;
         public ICollection<CharacterReview> Reviews { get; set; } = new List<CharacterReview>();
 
-        public ICollection<ImageGenerationCharacter> ImageGenerationCharacters { get; set; } = new List<ImageGenerationCharacter>();    
+        public ICollection<ImageGenerationCharacter> ImageGenerationCharacters { get; set; } = new List<ImageGenerationCharacter>();
+
+        public ICollection<SceneCharacter> SceneCharacters { get; set; } = new List<SceneCharacter>();
+
     }
 }

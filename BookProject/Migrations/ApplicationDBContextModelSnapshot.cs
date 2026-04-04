@@ -187,14 +187,9 @@ namespace BookProject.Migrations
                     b.Property<int>("CharacterId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CharacterId1")
-                        .HasColumnType("int");
-
                     b.HasKey("ImageGenerationId", "CharacterId");
 
                     b.HasIndex("CharacterId");
-
-                    b.HasIndex("CharacterId1");
 
                     b.ToTable("ImageGenerationCharacters");
                 });
@@ -270,9 +265,6 @@ namespace BookProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("CharacterId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SceneCharacterId")
                         .HasColumnType("int");
 
                     b.HasKey("SceneId", "CharacterId");
@@ -405,14 +397,10 @@ namespace BookProject.Migrations
             modelBuilder.Entity("BookProject.Models.ImageGenerationCharacter", b =>
                 {
                     b.HasOne("BookProject.Models.Character", "Character")
-                        .WithMany()
-                        .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookProject.Models.Character", null)
                         .WithMany("ImageGenerationCharacters")
-                        .HasForeignKey("CharacterId1");
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("BookProject.Models.ImageGeneration", "ImageGeneration")
                         .WithMany("ImageGenerationCharacters")
@@ -454,9 +442,9 @@ namespace BookProject.Migrations
             modelBuilder.Entity("BookProject.Models.SceneCharacter", b =>
                 {
                     b.HasOne("BookProject.Models.Character", "Character")
-                        .WithMany()
+                        .WithMany("SceneCharacters")
                         .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("BookProject.Models.Scene", "Scene")
@@ -503,6 +491,8 @@ namespace BookProject.Migrations
                     b.Navigation("ImageGenerationCharacters");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("SceneCharacters");
                 });
 
             modelBuilder.Entity("BookProject.Models.ImageGeneration", b =>

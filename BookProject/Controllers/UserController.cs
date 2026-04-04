@@ -1,4 +1,5 @@
-﻿using BookProject.Data;
+﻿using BookProject.Interfaces;
+using BookProject.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookProject.Controllers
@@ -7,28 +8,27 @@ namespace BookProject.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
+        private readonly IUserRepository _userRepo;
 
-        public UserController(ApplicationDBContext context)
+        public UserController(IUserRepository userRepo)
         {
-            _context = context;
+            _userRepo = userRepo;
         }
 
         [HttpGet]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            var users = _context.Users.ToList();
-            return Ok(users);
+            var users = await _userRepo.GetAllUsersAsync();
+            return Ok(users.Select(u => u.ToReadDTO()));
         }
+
         [HttpGet("{id}")]
-        public IActionResult GetUser([FromRoute] int id)
+        public async Task<IActionResult> GetUser(int id)
         {
-            var user = _context.Users.Find(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return Ok(user);
+            var user = await _userRepo.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
+
+            return Ok(user.ToReadDTO());
         }
     }
 }
