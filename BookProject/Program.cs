@@ -26,7 +26,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<ICharacterReviewRepository, CharacterReviewRepository>();
 builder.Services.AddScoped<IBookReviewRepository, BookReviewRepository>();
-
+builder.Services.AddScoped<IUserBookRepository, UserBookRepository>();
 
 builder.Services.AddHttpClient<ImageGenerationService>();
 
