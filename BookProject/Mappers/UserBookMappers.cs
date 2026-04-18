@@ -5,11 +5,11 @@ namespace BookProject.Mappers
 {
     public static class UserBookMappers
     {
-        public static UserBook ToUserBookFromCreateDTO(this UserBookCreateDTO dto)
+        public static UserBook ToUserBookFromCreateDTO(this UserBookCreateDTO dto, int userId)
         {
             return new UserBook
             {
-                UserId = dto.UserId,
+                UserId = userId,
                 BookId = dto.BookId,
                 IsRead = false,
                 ReadDate = null,

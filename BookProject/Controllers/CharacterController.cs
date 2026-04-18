@@ -1,12 +1,14 @@
 ﻿using BookProject.Data;
 using BookProject.Interfaces;
 using BookProject.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static BookProject.DTOs.BookDTOs;
 using static BookProject.DTOs.CharacterDTOs;
 
 namespace BookProject.Controllers
 {
+    [Authorize]
     [Route("character")]
     [ApiController]
     public class CharacterController : ControllerBase

@@ -1,13 +1,14 @@
 ﻿using BookProject.Data;
 using BookProject.Interfaces;
 using BookProject.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static BookProject.DTOs.BookDTOs;
 using static BookProject.Mappers.BookMappers;
 namespace BookProject.Controllers
 {
-
+    [Authorize]
     [Route("book")]
     [ApiController]
     public class BookController : ControllerBase

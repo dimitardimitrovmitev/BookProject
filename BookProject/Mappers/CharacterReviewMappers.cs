@@ -17,12 +17,12 @@ namespace BookProject.Mappers
             };
         }
 
-        public static CharacterReview ToCharacterReviewFromCreateDTO(this CharacterReviewCreateDTO dto)
+        public static CharacterReview ToCharacterReviewFromCreateDTO(this CharacterReviewCreateDTO dto, int userId)
         {
             return new CharacterReview
             {
                 CharacterId = dto.CharacterId,
-                UserId = dto.UserId,
+                UserId = userId,
                 ReviewText = dto.ReviewText,
                 Rating = dto.Rating
             };

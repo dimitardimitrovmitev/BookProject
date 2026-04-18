@@ -1,10 +1,13 @@
 ﻿using BookProject.Interfaces;
 using BookProject.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static BookProject.DTOs.BookReviewDTOs;
 
 namespace BookProject.Controllers
 {
+    [Authorize]
     [Route("bookreview")]
     [ApiController]
     public class BookReviewController : ControllerBase
@@ -15,6 +18,9 @@ namespace BookProject.Controllers
         {
             _reviewRepo = reviewRepo;
         }
+
+        private int GetCurrentUserId() =>
+            int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
         public async Task<IActionResult> GetReviews()
@@ -42,7 +48,7 @@ namespace BookProject.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateReview([FromBody] BookReviewCreateDTO dto)
         {
-            var reviewModel = dto.ToBookReviewFromCreateDTO();
+            var reviewModel = dto.ToBookReviewFromCreateDTO(GetCurrentUserId());
             var created = await _reviewRepo.CreateReviewAsync(reviewModel);
             return CreatedAtAction(nameof(GetReview), new { id = created.BookReviewId }, created.ToReadDTO());
         }

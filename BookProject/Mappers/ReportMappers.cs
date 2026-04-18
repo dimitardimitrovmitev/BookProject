@@ -5,11 +5,11 @@ namespace BookProject.Mappers
 {
     public static class ReportMappers
     {
-        public static Report ToReportFromCreateDTO(this ReportCreateDTO dto)
+        public static Report ToReportFromCreateDTO(this ReportCreateDTO dto, int userId)
         {
             return new Report
             {
-                UserId = dto.UserId,
+                UserId = userId,
                 EntityType = dto.EntityType,
                 EntityId = dto.EntityId,
                 Reason = dto.Reason,

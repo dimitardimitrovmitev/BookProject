@@ -1,9 +1,11 @@
 ﻿using BookProject.Interfaces;
 using BookProject.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookProject.Controllers
 {
+    [Authorize]
     [Route("user")]
     [ApiController]
     public class UserController : ControllerBase

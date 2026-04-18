@@ -1,13 +1,13 @@
-﻿using BookProject.Data;
-using BookProject.Interfaces;
-using BookProject.Models;
-using BookProject.Repositories;
+﻿using BookProject.Interfaces;
 using BookProject.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static BookProject.DTOs.ImageGenerationDTOs;
 
 namespace BookProject.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("imagegeneration")]
     public class ImageGenerationController : ControllerBase
@@ -15,6 +15,7 @@ namespace BookProject.Controllers
         private readonly ImageGenerationService _imageService;
         private readonly IWebHostEnvironment _env;
         private readonly IImageGenerationRepository _imageRepo;
+
         public ImageGenerationController(ImageGenerationService imageService, IWebHostEnvironment env, IImageGenerationRepository imageRepo)
         {
             _imageService = imageService;
@@ -22,13 +23,14 @@ namespace BookProject.Controllers
             _imageRepo = imageRepo;
         }
 
+        private int GetCurrentUserId() =>
+            int.Parse(User.FindFirstValue("userId")!);
+
         [HttpGet]
         public async Task<IActionResult> GetGenerations()
         {
             var generations = await _imageRepo.GetAllGenerationsAsync();
-
             if (generations == null || generations.Count == 0) return NotFound("No image generations found.");
-            
             return Ok(generations);
         }
 
@@ -37,27 +39,22 @@ namespace BookProject.Controllers
         {
             var generation = await _imageRepo.GetGenerationByIdAsync(id);
             if (generation is null) return NotFound();
-            
             return Ok(generation);
         }
 
         [HttpGet("user/{userId}")]
-
         public async Task<IActionResult> GetGenerationsByUser([FromRoute] int userId)
         {
             var generations = await _imageRepo.GetGenerationsByUserAsync(userId);
             if (generations == null || generations.Count == 0) return NotFound("No image generations found for the specified user.");
-            
             return Ok(generations);
         }
 
         [HttpGet("scene/{sceneId}")]
-
         public async Task<IActionResult> GetGenerationsByScene([FromRoute] int sceneId)
         {
             var generations = await _imageRepo.GetGenerationsBySceneAsync(sceneId);
             if (generations == null || generations.Count == 0) return NotFound("No image generations found for the specified scene.");
-            
             return Ok(generations);
         }
 
@@ -69,9 +66,8 @@ namespace BookProject.Controllers
 
             var outputFolder = Path.Combine(_env.WebRootPath ?? "wwwroot", "generated");
 
-            
             var imageRecord = await _imageRepo.GenerateAndSaveAsync(
-                request.UserId,
+                GetCurrentUserId(),
                 request.SceneId,
                 request.Prompt,
                 outputFolder,
