@@ -61,8 +61,7 @@ namespace BookProject.Controllers
         [HttpPost("generate")]
         public async Task<IActionResult> Generate([FromBody] GenerateRequestDto request)
         {
-            if (string.IsNullOrWhiteSpace(request.Prompt))
-                return BadRequest("Prompt cannot be empty.");
+            
 
             var outputFolder = Path.Combine(_env.WebRootPath ?? "wwwroot", "generated");
 
