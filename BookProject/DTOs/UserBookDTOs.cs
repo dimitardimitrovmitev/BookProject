@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BookProject.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookProject.DTOs
 {
@@ -14,14 +15,15 @@ namespace BookProject.DTOs
         {
             public int UserId { get; set; }
             public int BookId { get; set; }
-            public bool IsRead { get; set; }
+            public ReadingStatus Status { get; set; }
             public DateTime? ReadDate { get; set; }
             public float? UserRating { get; set; }
         }
 
-        public class UserBookMarkReadDTO
+        public class UserBookUpdateStatusDTO
         {
-            public DateTime? ReadDate { get; set; }
+            [Required]
+            public ReadingStatus Status { get; set; }
         }
 
         public class UserBookRateDTO

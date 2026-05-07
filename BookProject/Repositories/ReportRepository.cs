@@ -69,5 +69,16 @@ namespace BookProject.Repositories
             await _context.SaveChangesAsync();
             return report;
         }
+
+        public async Task<Report?> ResolveReportAsync(int id)
+        {
+            var report = await _context.Reports.FindAsync(id);
+
+            if (report == null) return null;
+
+            report.Resolved = true;
+            await _context.SaveChangesAsync();
+            return report;
+        }
     }
 }

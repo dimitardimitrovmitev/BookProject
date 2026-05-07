@@ -91,5 +91,15 @@ namespace BookProject.Controllers
                 characters = request.CharacterIds
             });
         }
+
+
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyGenerations()
+        {
+            var generations = await _imageRepo.GetGenerationsByUserAsync(GetCurrentUserId());
+            if (generations == null || generations.Count == 0)
+                return NotFound("No generations found.");
+            return Ok(generations);
+        }
     }
 }

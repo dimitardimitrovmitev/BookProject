@@ -30,10 +30,13 @@ namespace BookProject.Repositories
                 reviews = reviews.Where(r => r.Character.Name.ToLower().Contains(name));
             }
 
+            if (query.UserId.HasValue)
+                reviews = reviews.Where(r => r.UserId == query.UserId.Value);
+
             reviews = query.SortBy switch
             {
                 CharacterReviewSortBy.Rating => query.SortDescending ? reviews.OrderByDescending(r => r.Rating) : reviews.OrderBy(r => r.Rating),
-                _ => query.SortDescending ? reviews.OrderByDescending(r => r.CharacterReviewId) : reviews.OrderBy(r => r.CharacterReviewId),
+                _ => query.SortDescending ? reviews.OrderByDescending(r => r.CreatedAt) : reviews.OrderBy(r => r.CreatedAt),
             };
 
             var totalCount = await reviews.CountAsync();

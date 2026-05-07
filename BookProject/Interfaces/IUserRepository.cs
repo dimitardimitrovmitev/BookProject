@@ -1,4 +1,5 @@
 ﻿using BookProject.Models;
+using static BookProject.DTOs.UserDTOs;
 
 namespace BookProject.Interfaces
 {
@@ -12,5 +13,6 @@ namespace BookProject.Interfaces
         Task<User> CreateAsync(User user);
         Task<User?> PromoteToAdminAsync(int userId);
         Task<User?> DemoteToUserAsync(int userId);
+        Task<(User? user, string? error)> UpdateProfileAsync(int userId, UserUpdateDTO dto);
     }
 }

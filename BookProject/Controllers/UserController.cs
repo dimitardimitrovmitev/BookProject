@@ -2,6 +2,8 @@ using BookProject.Interfaces;
 using BookProject.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using static BookProject.DTOs.UserDTOs;
 
 namespace BookProject.Controllers
 {
@@ -17,6 +19,9 @@ namespace BookProject.Controllers
             _userRepo = userRepo;
         }
 
+        private int GetCurrentUserId() =>
+            int.Parse(User.FindFirstValue("userId")!);
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
@@ -31,6 +36,25 @@ namespace BookProject.Controllers
         {
             var user = await _userRepo.GetUserByIdAsync(id);
             if (user == null) return NotFound();
+            return Ok(user.ToReadDTO());
+        }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
+        {
+            var user = await _userRepo.GetUserByIdAsync(GetCurrentUserId());
+            if (user == null) return NotFound();
+            return Ok(user.ToReadDTO());
+        }
+
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMe([FromBody] UserUpdateDTO dto)
+        {
+            var (user, error) = await _userRepo.UpdateProfileAsync(GetCurrentUserId(), dto);
+
+            if (error != null) return BadRequest(error);
+            if (user == null) return NotFound();
+
             return Ok(user.ToReadDTO());
         }
 

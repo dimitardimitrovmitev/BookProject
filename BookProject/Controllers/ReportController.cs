@@ -63,5 +63,15 @@ namespace BookProject.Controllers
             if (deleted == null) return NotFound();
             return NoContent();
         }
+
+
+        [HttpPut("{id}/resolve")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ResolveReport(int id)
+        {
+            var resolved = await _reportRepo.ResolveReportAsync(id);
+            if (resolved == null) return NotFound();
+            return Ok(resolved.ToReadDTO());
+        }
     }
 }

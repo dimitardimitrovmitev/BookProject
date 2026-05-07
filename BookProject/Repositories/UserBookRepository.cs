@@ -68,8 +68,8 @@ namespace BookProject.Repositories
 
         private static IQueryable<UserBook> ApplyFilters(IQueryable<UserBook> query, UserBookQueryObject filter)
         {
-            if (filter.IsRead.HasValue)
-                query = query.Where(ub => ub.IsRead == filter.IsRead.Value);
+            if (filter.Status.HasValue)
+                query = query.Where(ub => ub.Status == filter.Status.Value);
 
             if (!string.IsNullOrWhiteSpace(filter.BookTitle))
             {
@@ -110,15 +110,20 @@ namespace BookProject.Repositories
             return userBook;
         }
 
-        public async Task<UserBook?> MarkAsReadAsync(int userId, int bookId, UserBookMarkReadDTO dto)
+        public async Task<UserBook?> UpdateStatusAsync(int userId, int bookId, UserBookUpdateStatusDTO dto)
         {
             var userBook = await _context.UserBooks
                 .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BookId == bookId);
 
             if (userBook == null) return null;
 
-            userBook.IsRead = true;
-            userBook.ReadDate = dto.ReadDate ?? DateTime.UtcNow;
+            userBook.Status = dto.Status;
+
+            // Automatically manage ReadDate based on status
+            if (dto.Status == ReadingStatus.Read)
+                userBook.ReadDate = DateTime.UtcNow;
+            else
+                userBook.ReadDate = null;
 
             await _context.SaveChangesAsync();
             return userBook;

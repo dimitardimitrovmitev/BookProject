@@ -80,5 +80,14 @@ namespace BookProject.Controllers
             if (deletedScene == null) return NotFound();
             return NoContent();
         }
+
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyScenes()
+        {
+            var scenes = await _sceneRepo.GetScenesByUserIdAsync(GetCurrentUserId());
+            if (scenes == null || scenes.Count == 0)
+                return NotFound("No scenes found.");
+            return Ok(scenes.Select(s => s.ToReadDTO()));
+        }
     }
 }

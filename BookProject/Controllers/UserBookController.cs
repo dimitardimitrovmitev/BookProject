@@ -38,6 +38,22 @@ namespace BookProject.Controllers
             });
         }
 
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyBooks([FromQuery] UserBookQueryObject query)
+        {
+            var result = await _userBookRepo.GetBooksByUserIdAsync(GetCurrentUserId(), query);
+            if (result.TotalCount == 0)
+                return NotFound("No books found.");
+            return Ok(new
+            {
+                items = result.Items.Select(ub => ub.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
+        }
+
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetBooksByUser([FromRoute] int userId, [FromQuery] UserBookQueryObject query)
         {
@@ -80,11 +96,10 @@ namespace BookProject.Controllers
                 created.ToReadDTO());
         }
 
-        [HttpPut("book/{bookId}/read")]
-        public async Task<IActionResult> MarkAsRead([FromRoute] int bookId, [FromBody] UserBookMarkReadDTO dto)
+        [HttpPut("book/{bookId}/status")]
+        public async Task<IActionResult> UpdateStatus([FromRoute] int bookId, [FromBody] UserBookUpdateStatusDTO dto)
         {
-            var userId = GetCurrentUserId();
-            var updated = await _userBookRepo.MarkAsReadAsync(userId, bookId, dto);
+            var updated = await _userBookRepo.UpdateStatusAsync(GetCurrentUserId(), bookId, dto);
             if (updated == null) return NotFound();
             return Ok(updated.ToReadDTO());
         }

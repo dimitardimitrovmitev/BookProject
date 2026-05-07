@@ -11,7 +11,7 @@ namespace BookProject.Mappers
             {
                 UserId = userId,
                 BookId = dto.BookId,
-                IsRead = false,
+                Status = ReadingStatus.WantToRead,
                 ReadDate = null,
                 UserRating = null
             };
@@ -23,7 +23,7 @@ namespace BookProject.Mappers
             {
                 UserId = userBook.UserId,
                 BookId = userBook.BookId,
-                IsRead = userBook.IsRead,
+                Status = userBook.Status,
                 ReadDate = userBook.ReadDate,
                 UserRating = userBook.UserRating
             };

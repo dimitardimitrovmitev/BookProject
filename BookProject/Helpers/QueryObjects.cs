@@ -1,4 +1,5 @@
 using BookProject.Helpers;
+using BookProject.Models;
 
 namespace BookProject.QueryObjects
 {
@@ -99,6 +100,7 @@ namespace BookProject.QueryObjects
     {
         public int? BookId { get; set; }
         public string? BookTitle { get; set; }
+        public int? UserId { get; set; }  // add this
         public BookReviewSortBy SortBy { get; set; } = BookReviewSortBy.CreatedAt;
     }
 
@@ -106,6 +108,7 @@ namespace BookProject.QueryObjects
     {
         public int? CharacterId { get; set; }
         public string? CharacterName { get; set; }
+        public int? UserId { get; set; }  // add this
         public CharacterReviewSortBy SortBy { get; set; } = CharacterReviewSortBy.CreatedAt;
     }
 
@@ -118,7 +121,7 @@ namespace BookProject.QueryObjects
 
     public class UserBookQueryObject : QueryObject
     {
-        public bool? IsRead { get; set; }
+        public ReadingStatus? Status { get; set; }
         public string? BookTitle { get; set; }
         public string? BookAuthor { get; set; }
         public UserBookSortBy SortBy { get; set; } = UserBookSortBy.Title;

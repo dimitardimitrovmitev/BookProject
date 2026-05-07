@@ -1,11 +1,19 @@
 ﻿namespace BookProject.Models
 {
+    public enum ReadingStatus
+    {
+        WantToRead,
+        CurrentlyReading,
+        Read,
+        Abandoned
+    }
+
     public class UserBook
     {
         public int UserId { get; set; }
         public int BookId { get; set; }
 
-        public bool IsRead { get; set; } = false;
+        public ReadingStatus Status { get; set; } = ReadingStatus.WantToRead;
         public DateTime? ReadDate { get; set; }
         public float? UserRating { get; set; }
 

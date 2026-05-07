@@ -11,7 +11,7 @@ namespace BookProject.Interfaces
         Task<PagedResult<UserBook>> GetBooksByUserIdAsync(int userId, UserBookQueryObject query);
         Task<UserBook?> GetUserBookAsync(int userId, int bookId);
         Task<UserBook> AddUserBookAsync(UserBook userBook);
-        Task<UserBook?> MarkAsReadAsync(int userId, int bookId, UserBookMarkReadDTO dto);
+        Task<UserBook?> UpdateStatusAsync(int userId, int bookId, UserBookUpdateStatusDTO dto);
         Task<UserBook?> RateBookAsync(int userId, int bookId, UserBookRateDTO dto);
         Task<UserBook?> RemoveUserBookAsync(int userId, int bookId);
     }

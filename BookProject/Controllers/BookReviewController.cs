@@ -38,6 +38,23 @@ namespace BookProject.Controllers
             });
         }
 
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyReviews([FromQuery] BookReviewQueryObject query)
+        {
+            query.UserId = GetCurrentUserId();
+            var result = await _reviewRepo.GetAllReviewsAsync(query);
+            if (result.TotalCount == 0)
+                return NotFound("No reviews found.");
+            return Ok(new
+            {
+                items = result.Items.Select(r => r.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetReview([FromRoute] int id)
         {

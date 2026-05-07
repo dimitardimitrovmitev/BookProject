@@ -32,6 +32,8 @@ namespace BookProject.Repositories
             if (query.PublishedAfter.HasValue)
                 books = books.Where(b => b.PublishedDate >= query.PublishedAfter.Value);
 
+
+
             books = query.SortBy switch
             {
                 BookSortBy.Author => query.SortDescending ? books.OrderByDescending(b => b.Author) : books.OrderBy(b => b.Author),
