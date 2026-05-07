@@ -21,7 +21,6 @@ namespace BookProject.Mappers
         {
             return new UserBookReadDTO
             {
-                UserBookId = userBook.UserBookId,
                 UserId = userBook.UserId,
                 BookId = userBook.BookId,
                 IsRead = userBook.IsRead,

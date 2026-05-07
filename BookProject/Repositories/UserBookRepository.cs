@@ -1,6 +1,8 @@
 ﻿using BookProject.Data;
+using BookProject.Helpers;
 using BookProject.Interfaces;
 using BookProject.Models;
+using BookProject.QueryObjects;
 using Microsoft.EntityFrameworkCore;
 using static BookProject.DTOs.UserBookDTOs;
 
@@ -15,16 +17,84 @@ namespace BookProject.Repositories
             _context = context;
         }
 
-        public async Task<List<UserBook>> GetAllUserBooksAsync()
+        public async Task<PagedResult<UserBook>> GetAllUserBooksAsync(UserBookQueryObject query)
         {
-            return await _context.UserBooks.ToListAsync();
+            var userBooks = _context.UserBooks.Include(ub => ub.Book).AsQueryable();
+
+            userBooks = ApplyFilters(userBooks, query);
+            userBooks = ApplySort(userBooks, query);
+
+            var totalCount = await userBooks.CountAsync();
+
+            var items = await userBooks
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<UserBook>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize
+            };
         }
 
-        public async Task<List<UserBook>> GetBooksByUserIdAsync(int userId)
+        public async Task<PagedResult<UserBook>> GetBooksByUserIdAsync(int userId, UserBookQueryObject query)
         {
-            return await _context.UserBooks
+            var userBooks = _context.UserBooks
+                .Include(ub => ub.Book)
                 .Where(ub => ub.UserId == userId)
+                .AsQueryable();
+
+            userBooks = ApplyFilters(userBooks, query);
+            userBooks = ApplySort(userBooks, query);
+
+            var totalCount = await userBooks.CountAsync();
+
+            var items = await userBooks
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
                 .ToListAsync();
+
+            return new PagedResult<UserBook>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize
+            };
+        }
+
+        private static IQueryable<UserBook> ApplyFilters(IQueryable<UserBook> query, UserBookQueryObject filter)
+        {
+            if (filter.IsRead.HasValue)
+                query = query.Where(ub => ub.IsRead == filter.IsRead.Value);
+
+            if (!string.IsNullOrWhiteSpace(filter.BookTitle))
+            {
+                var title = filter.BookTitle.Trim().ToLower();
+                query = query.Where(ub => ub.Book.Title.ToLower().Contains(title));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.BookAuthor))
+            {
+                var author = filter.BookAuthor.Trim().ToLower();
+                query = query.Where(ub => ub.Book.Author.ToLower().Contains(author));
+            }
+
+            return query;
+        }
+
+        private static IQueryable<UserBook> ApplySort(IQueryable<UserBook> query, UserBookQueryObject filter)
+        {
+            return filter.SortBy switch
+            {
+                UserBookSortBy.Author => filter.SortDescending ? query.OrderByDescending(ub => ub.Book.Author) : query.OrderBy(ub => ub.Book.Author),
+                UserBookSortBy.ReadDate => filter.SortDescending ? query.OrderByDescending(ub => ub.ReadDate) : query.OrderBy(ub => ub.ReadDate),
+                UserBookSortBy.UserRating => filter.SortDescending ? query.OrderByDescending(ub => ub.UserRating) : query.OrderBy(ub => ub.UserRating),
+                _ => filter.SortDescending ? query.OrderByDescending(ub => ub.Book.Title) : query.OrderBy(ub => ub.Book.Title),
+            };
         }
 
         public async Task<UserBook?> GetUserBookAsync(int userId, int bookId)

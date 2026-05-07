@@ -1,4 +1,5 @@
 ﻿using BookProject.Interfaces;
+using BookProject.QueryObjects;
 using BookProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +27,20 @@ namespace BookProject.Controllers
         private int GetCurrentUserId() =>
             int.Parse(User.FindFirstValue("userId")!);
 
+        // Gallery endpoint — supports filtering by userId, sceneId, characterId, bookId
         [HttpGet]
-        public async Task<IActionResult> GetGenerations()
+        public async Task<IActionResult> GetGenerations([FromQuery] ImageGenerationQueryObject query)
         {
-            var generations = await _imageRepo.GetAllGenerationsAsync();
-            if (generations == null || generations.Count == 0) return NotFound("No image generations found.");
-            return Ok(generations);
+            var result = await _imageRepo.GetAllGenerationsAsync(query);
+
+            return Ok(new
+            {
+                items = result.Items,
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]
@@ -46,7 +55,8 @@ namespace BookProject.Controllers
         public async Task<IActionResult> GetGenerationsByUser([FromRoute] int userId)
         {
             var generations = await _imageRepo.GetGenerationsByUserAsync(userId);
-            if (generations == null || generations.Count == 0) return NotFound("No image generations found for the specified user.");
+            if (generations == null || generations.Count == 0)
+                return NotFound("No image generations found for the specified user.");
             return Ok(generations);
         }
 
@@ -54,15 +64,14 @@ namespace BookProject.Controllers
         public async Task<IActionResult> GetGenerationsByScene([FromRoute] int sceneId)
         {
             var generations = await _imageRepo.GetGenerationsBySceneAsync(sceneId);
-            if (generations == null || generations.Count == 0) return NotFound("No image generations found for the specified scene.");
+            if (generations == null || generations.Count == 0)
+                return NotFound("No image generations found for the specified scene.");
             return Ok(generations);
         }
 
         [HttpPost("generate")]
         public async Task<IActionResult> Generate([FromBody] GenerateRequestDto request)
         {
-            
-
             var outputFolder = Path.Combine(_env.WebRootPath ?? "wwwroot", "generated");
 
             var imageRecord = await _imageRepo.GenerateAndSaveAsync(

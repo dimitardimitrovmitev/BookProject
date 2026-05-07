@@ -1,5 +1,6 @@
 ﻿using BookProject.Interfaces;
 using BookProject.Mappers;
+using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -23,10 +24,18 @@ namespace BookProject.Controllers
             int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
-        public async Task<IActionResult> GetReviews()
+        public async Task<IActionResult> GetReviews([FromQuery] BookReviewQueryObject query)
         {
-            var reviews = await _reviewRepo.GetAllReviewsAsync();
-            return Ok(reviews.Select(r => r.ToReadDTO()));
+            var result = await _reviewRepo.GetAllReviewsAsync(query);
+
+            return Ok(new
+            {
+                items = result.Items.Select(r => r.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]
@@ -41,7 +50,8 @@ namespace BookProject.Controllers
         public async Task<IActionResult> GetReviewsByBook([FromRoute] int bookId)
         {
             var reviews = await _reviewRepo.GetReviewsByBookIdAsync(bookId);
-            if (reviews == null || reviews.Count == 0) return NotFound($"No reviews found for book ID {bookId}.");
+            if (reviews == null || reviews.Count == 0)
+                return NotFound($"No reviews found for book ID {bookId}.");
             return Ok(reviews.Select(r => r.ToReadDTO()));
         }
 

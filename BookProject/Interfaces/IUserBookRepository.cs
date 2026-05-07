@@ -1,12 +1,14 @@
-﻿using BookProject.Models;
+﻿using BookProject.Helpers;
+using BookProject.Models;
+using BookProject.QueryObjects;
 using static BookProject.DTOs.UserBookDTOs;
 
 namespace BookProject.Interfaces
 {
     public interface IUserBookRepository
     {
-        Task<List<UserBook>> GetAllUserBooksAsync();
-        Task<List<UserBook>> GetBooksByUserIdAsync(int userId);
+        Task<PagedResult<UserBook>> GetAllUserBooksAsync(UserBookQueryObject query);
+        Task<PagedResult<UserBook>> GetBooksByUserIdAsync(int userId, UserBookQueryObject query);
         Task<UserBook?> GetUserBookAsync(int userId, int bookId);
         Task<UserBook> AddUserBookAsync(UserBook userBook);
         Task<UserBook?> MarkAsReadAsync(int userId, int bookId, UserBookMarkReadDTO dto);

@@ -1,5 +1,6 @@
 ﻿using BookProject.Interfaces;
 using BookProject.Mappers;
+using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -23,10 +24,18 @@ namespace BookProject.Controllers
             int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
-        public async Task<IActionResult> GetReviews()
+        public async Task<IActionResult> GetReviews([FromQuery] CharacterReviewQueryObject query)
         {
-            var reviews = await _reviewRepo.GetAllReviewsAsync();
-            return Ok(reviews.Select(r => r.ToReadDTO()));
+            var result = await _reviewRepo.GetAllReviewsAsync(query);
+
+            return Ok(new
+            {
+                items = result.Items.Select(r => r.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]

@@ -1,5 +1,6 @@
 ﻿using BookProject.Interfaces;
 using BookProject.Mappers;
+using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -23,19 +24,36 @@ namespace BookProject.Controllers
             int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUserBooks()
+        public async Task<IActionResult> GetAllUserBooks([FromQuery] UserBookQueryObject query)
         {
-            var userBooks = await _userBookRepo.GetAllUserBooksAsync();
-            return Ok(userBooks.Select(ub => ub.ToReadDTO()));
+            var result = await _userBookRepo.GetAllUserBooksAsync(query);
+
+            return Ok(new
+            {
+                items = result.Items.Select(ub => ub.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetBooksByUser([FromRoute] int userId)
+        public async Task<IActionResult> GetBooksByUser([FromRoute] int userId, [FromQuery] UserBookQueryObject query)
         {
-            var userBooks = await _userBookRepo.GetBooksByUserIdAsync(userId);
-            if (userBooks == null || userBooks.Count == 0)
+            var result = await _userBookRepo.GetBooksByUserIdAsync(userId, query);
+
+            if (result.TotalCount == 0)
                 return NotFound($"No books found for user ID {userId}.");
-            return Ok(userBooks.Select(ub => ub.ToReadDTO()));
+
+            return Ok(new
+            {
+                items = result.Items.Select(ub => ub.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpGet("user/{userId}/book/{bookId}")]

@@ -1,5 +1,6 @@
 ﻿using BookProject.Interfaces;
 using BookProject.Mappers;
+using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -23,10 +24,18 @@ namespace BookProject.Controllers
             int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
-        public async Task<IActionResult> GetAllScenes()
+        public async Task<IActionResult> GetAllScenes([FromQuery] SceneQueryObject query)
         {
-            var scenes = await _sceneRepo.GetAllScenesAsync();
-            return Ok(scenes.Select(s => s.ToReadDTO()));
+            var result = await _sceneRepo.GetAllScenesAsync(query);
+
+            return Ok(new
+            {
+                items = result.Items.Select(s => s.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]

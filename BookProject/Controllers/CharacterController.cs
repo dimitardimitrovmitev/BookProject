@@ -1,9 +1,9 @@
 ﻿using BookProject.Data;
 using BookProject.Interfaces;
 using BookProject.Mappers;
+using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static BookProject.DTOs.BookDTOs;
 using static BookProject.DTOs.CharacterDTOs;
 
 namespace BookProject.Controllers
@@ -14,8 +14,8 @@ namespace BookProject.Controllers
     public class CharacterController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
-
         private readonly ICharacterRepository _characterRepo;
+
         public CharacterController(ApplicationDBContext context, ICharacterRepository characterRepo)
         {
             _context = context;
@@ -23,10 +23,18 @@ namespace BookProject.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCharactersAsync()
+        public async Task<IActionResult> GetAllCharactersAsync([FromQuery] CharacterQueryObject query)
         {
-            var characters = await _characterRepo.GetAllCharactersAsync();
-            return Ok(characters.Select(c => c.ToReadDTO()));
+            var result = await _characterRepo.GetAllCharactersAsync(query);
+
+            return Ok(new
+            {
+                items = result.Items.Select(c => c.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpGet("{id}")]
@@ -34,53 +42,49 @@ namespace BookProject.Controllers
         {
             var character = await _characterRepo.GetCharacterByIdAsync(id);
             if (character == null) return NotFound();
-            
             return Ok(character.ToReadDTO());
+        }
+
+        [HttpGet("book/{bookId}")]
+        public async Task<IActionResult> GetCharactersByBookId([FromRoute] int bookId, [FromQuery] CharacterQueryObject query)
+        {
+            var result = await _characterRepo.GetCharactersByBookIdAsync(bookId, query);
+
+            if (result.TotalCount == 0)
+                return NotFound($"No characters found for book ID {bookId}.");
+
+            return Ok(new
+            {
+                items = result.Items.Select(c => c.ToReadDTO()),
+                result.TotalCount,
+                result.PageNumber,
+                result.PageSize,
+                result.TotalPages
+            });
         }
 
         [HttpPost("manual")]
         public async Task<IActionResult> CreateCharacter([FromBody] CharacterCreateDTO characterDto)
         {
             var characterModel = characterDto.ToCharacterFromCreateDTO();
-
             await _characterRepo.AddCharacterAsync(characterModel);
-
-            // The route value must match the parameter name in GetCharacterByIdAsync, which is "id"
             return CreatedAtAction("GetCharacterById", new { id = characterModel.CharacterId }, characterModel.ToReadDTO());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCharacter([FromRoute] int id)
         {
             var characterModel = await _characterRepo.DeleteCharacterAsync(id);
-
             if (characterModel == null) return NotFound();
-
             return NoContent();
         }
 
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCharacter([FromRoute] int id, [FromBody] CharacterUpdateDTO characterDto)
         {
             var characterModel = await _characterRepo.UpdateCharacterAsync(id, characterDto);
-
             if (characterModel == null) return NotFound();
-
             return Ok(characterModel.ToReadDTO());
-        }
-
-        [HttpGet("book/{bookId}")]
-        public async Task<IActionResult> GetCharactersByBookId([FromRoute] int bookId)
-        {
-            var characters = await _characterRepo.GetCharactersByBookIdAsync(bookId);
-
-            if (characters == null || characters.Count == 0)
-                return NotFound($"No characters found for book ID {bookId}");
-
-            return Ok(characters.Select(c => c.ToReadDTO()));
         }
     }
 }

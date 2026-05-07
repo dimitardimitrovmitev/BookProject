@@ -1,6 +1,8 @@
 ﻿using BookProject.Data;
+using BookProject.Helpers;
 using BookProject.Interfaces;
 using BookProject.Models;
+using BookProject.QueryObjects;
 using Microsoft.EntityFrameworkCore;
 using static BookProject.DTOs.BookReviewDTOs;
 
@@ -15,9 +17,39 @@ namespace BookProject.Repositories
             _context = context;
         }
 
-        public async Task<List<BookReview>> GetAllReviewsAsync()
+        public async Task<PagedResult<BookReview>> GetAllReviewsAsync(BookReviewQueryObject query)
         {
-            return await _context.BookReviews.ToListAsync();
+            var reviews = _context.BookReviews.Include(r => r.Book).AsQueryable();
+
+            if (query.BookId.HasValue)
+                reviews = reviews.Where(r => r.BookId == query.BookId.Value);
+
+            if (!string.IsNullOrWhiteSpace(query.BookTitle))
+            {
+                var title = query.BookTitle.Trim().ToLower();
+                reviews = reviews.Where(r => r.Book.Title.ToLower().Contains(title));
+            }
+
+            reviews = query.SortBy switch
+            {
+                BookReviewSortBy.Rating => query.SortDescending ? reviews.OrderByDescending(r => r.Rating) : reviews.OrderBy(r => r.Rating),
+                _ => query.SortDescending ? reviews.OrderByDescending(r => r.BookReviewId) : reviews.OrderBy(r => r.BookReviewId),
+            };
+
+            var totalCount = await reviews.CountAsync();
+
+            var items = await reviews
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<BookReview>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize
+            };
         }
 
         public async Task<BookReview?> GetReviewByIdAsync(int id)

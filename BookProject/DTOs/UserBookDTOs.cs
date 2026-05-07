@@ -12,7 +12,6 @@ namespace BookProject.DTOs
 
         public class UserBookReadDTO
         {
-            public int UserBookId { get; set; }
             public int UserId { get; set; }
             public int BookId { get; set; }
             public bool IsRead { get; set; }

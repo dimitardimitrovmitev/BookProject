@@ -1,6 +1,8 @@
 ﻿using BookProject.Data;
+using BookProject.Helpers;
 using BookProject.Interfaces;
 using BookProject.Models;
+using BookProject.QueryObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookProject.Repositories
@@ -14,9 +16,34 @@ namespace BookProject.Repositories
             _context = context;
         }
 
-        public async Task<List<Report>> GetAllReportsAsync()
+        public async Task<PagedResult<Report>> GetAllReportsAsync(ReportQueryObject query)
         {
-            return await _context.Reports.ToListAsync();
+            var reports = _context.Reports.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.EntityType))
+                reports = reports.Where(r => r.EntityType == query.EntityType);
+
+            if (query.Resolved.HasValue)
+                reports = reports.Where(r => r.Resolved == query.Resolved.Value);
+
+            reports = query.SortDescending
+                ? reports.OrderByDescending(r => r.ReportedAt)
+                : reports.OrderBy(r => r.ReportedAt);
+
+            var totalCount = await reports.CountAsync();
+
+            var items = await reports
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<Report>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize
+            };
         }
 
         public async Task<Report?> GetReportByIdAsync(int id)

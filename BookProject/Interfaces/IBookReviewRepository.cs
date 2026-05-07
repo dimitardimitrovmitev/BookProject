@@ -1,11 +1,13 @@
-﻿using BookProject.Models;
+﻿using BookProject.Helpers;
+using BookProject.Models;
+using BookProject.QueryObjects;
 using static BookProject.DTOs.BookReviewDTOs;
 
 namespace BookProject.Interfaces
 {
     public interface IBookReviewRepository
     {
-        Task<List<BookReview>> GetAllReviewsAsync();
+        Task<PagedResult<BookReview>> GetAllReviewsAsync(BookReviewQueryObject query);
         Task<BookReview?> GetReviewByIdAsync(int id);
         Task<List<BookReview>> GetReviewsByBookIdAsync(int bookId);
         Task<BookReview> CreateReviewAsync(BookReview review);
