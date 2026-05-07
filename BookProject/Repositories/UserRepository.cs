@@ -45,5 +45,27 @@ namespace BookProject.Repositories
             await _context.SaveChangesAsync();
             return user;
         }
+
+        public async Task<User?> PromoteToAdminAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null) return null;
+
+            user.Role = "Admin";
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User?> DemoteToUserAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null) return null;
+
+            user.Role = "User";
+            await _context.SaveChangesAsync();
+            return user;
+        }
     }
 }

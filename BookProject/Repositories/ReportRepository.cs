@@ -1,4 +1,4 @@
-﻿using BookProject.Data;
+using BookProject.Data;
 using BookProject.Helpers;
 using BookProject.Interfaces;
 using BookProject.Models;
@@ -58,9 +58,11 @@ namespace BookProject.Repositories
             return report;
         }
 
-        public async Task<Report?> DeleteReportAsync(int id)
+        public async Task<Report?> DeleteReportAsync(int id, int userId)
         {
-            var report = await _context.Reports.FindAsync(id);
+            var report = await _context.Reports
+                .FirstOrDefaultAsync(r => r.ReportId == id && r.UserId == userId);
+
             if (report == null) return null;
 
             _context.Reports.Remove(report);

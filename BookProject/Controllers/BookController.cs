@@ -1,4 +1,4 @@
-﻿using BookProject.Interfaces;
+using BookProject.Interfaces;
 using BookProject.Mappers;
 using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +44,7 @@ namespace BookProject.Controllers
         }
 
         [HttpPost("manual")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateBook([FromBody] BookCreateDTO bookDto)
         {
             var bookModel = bookDto.ToBookFromCreateDTO();
@@ -52,6 +53,7 @@ namespace BookProject.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] BookUpdateDTO bookDto)
         {
             var bookModel = await _bookRepo.UpdateBookAsync(id, bookDto);
@@ -60,6 +62,7 @@ namespace BookProject.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteBook([FromRoute] int id)
         {
             var bookModel = await _bookRepo.DeleteBookAsync(id);

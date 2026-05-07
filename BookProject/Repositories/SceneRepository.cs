@@ -1,4 +1,4 @@
-﻿using BookProject.Data;
+using BookProject.Data;
 using BookProject.Helpers;
 using BookProject.Interfaces;
 using BookProject.Models;
@@ -105,11 +105,11 @@ namespace BookProject.Repositories
             return await GetSceneByIdAsync(scene.SceneId);
         }
 
-        public async Task<Scene?> UpdateSceneAsync(int id, SceneUpdateDTO sceneDto)
+        public async Task<Scene?> UpdateSceneAsync(int id, int userId, SceneUpdateDTO sceneDto)
         {
             var existingScene = await _context.Scenes
                 .Include(s => s.SceneCharacters)
-                .FirstOrDefaultAsync(s => s.SceneId == id);
+                .FirstOrDefaultAsync(s => s.SceneId == id && s.UserId == userId);
 
             if (existingScene == null) return null;
 
@@ -133,9 +133,11 @@ namespace BookProject.Repositories
             return await GetSceneByIdAsync(id);
         }
 
-        public async Task<Scene?> DeleteSceneAsync(int id)
+        public async Task<Scene?> DeleteSceneAsync(int id, int userId)
         {
-            var scene = await _context.Scenes.FindAsync(id);
+            var scene = await _context.Scenes
+                .FirstOrDefaultAsync(s => s.SceneId == id && s.UserId == userId);
+
             if (scene == null) return null;
 
             _context.Scenes.Remove(scene);

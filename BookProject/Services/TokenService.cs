@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BookProject.Models;
@@ -21,7 +21,8 @@ namespace BookProject.Services
             {
                 new Claim("userId", user.UserId.ToString()),
                 new Claim("username", user.Username),
-                new Claim("email", user.Email)
+                new Claim("email", user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));

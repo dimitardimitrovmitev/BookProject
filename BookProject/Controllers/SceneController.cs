@@ -1,4 +1,4 @@
-﻿using BookProject.Interfaces;
+using BookProject.Interfaces;
 using BookProject.Mappers;
 using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
@@ -68,7 +68,7 @@ namespace BookProject.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateScene([FromRoute] int id, [FromBody] SceneUpdateDTO dto)
         {
-            var updatedScene = await _sceneRepo.UpdateSceneAsync(id, dto);
+            var updatedScene = await _sceneRepo.UpdateSceneAsync(id, GetCurrentUserId(), dto);
             if (updatedScene == null) return NotFound();
             return Ok(updatedScene.ToReadDTO());
         }
@@ -76,7 +76,7 @@ namespace BookProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteScene([FromRoute] int id)
         {
-            var deletedScene = await _sceneRepo.DeleteSceneAsync(id);
+            var deletedScene = await _sceneRepo.DeleteSceneAsync(id, GetCurrentUserId());
             if (deletedScene == null) return NotFound();
             return NoContent();
         }

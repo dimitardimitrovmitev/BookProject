@@ -1,4 +1,4 @@
-﻿using BookProject.Data;
+using BookProject.Data;
 using BookProject.Interfaces;
 using BookProject.Mappers;
 using BookProject.QueryObjects;
@@ -64,6 +64,7 @@ namespace BookProject.Controllers
         }
 
         [HttpPost("manual")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCharacter([FromBody] CharacterCreateDTO characterDto)
         {
             var characterModel = characterDto.ToCharacterFromCreateDTO();
@@ -71,20 +72,22 @@ namespace BookProject.Controllers
             return CreatedAtAction("GetCharacterById", new { id = characterModel.CharacterId }, characterModel.ToReadDTO());
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCharacter([FromRoute] int id)
-        {
-            var characterModel = await _characterRepo.DeleteCharacterAsync(id);
-            if (characterModel == null) return NotFound();
-            return NoContent();
-        }
-
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCharacter([FromRoute] int id, [FromBody] CharacterUpdateDTO characterDto)
         {
             var characterModel = await _characterRepo.UpdateCharacterAsync(id, characterDto);
             if (characterModel == null) return NotFound();
             return Ok(characterModel.ToReadDTO());
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteCharacter([FromRoute] int id)
+        {
+            var characterModel = await _characterRepo.DeleteCharacterAsync(id);
+            if (characterModel == null) return NotFound();
+            return NoContent();
         }
     }
 }

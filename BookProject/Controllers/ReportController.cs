@@ -1,4 +1,4 @@
-﻿using BookProject.Interfaces;
+using BookProject.Interfaces;
 using BookProject.Mappers;
 using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +24,7 @@ namespace BookProject.Controllers
             int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetReports([FromQuery] ReportQueryObject query)
         {
             var result = await _reportRepo.GetAllReportsAsync(query);
@@ -39,6 +40,7 @@ namespace BookProject.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetReport(int id)
         {
             var report = await _reportRepo.GetReportByIdAsync(id);
@@ -57,7 +59,7 @@ namespace BookProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
-            var deleted = await _reportRepo.DeleteReportAsync(id);
+            var deleted = await _reportRepo.DeleteReportAsync(id, GetCurrentUserId());
             if (deleted == null) return NotFound();
             return NoContent();
         }

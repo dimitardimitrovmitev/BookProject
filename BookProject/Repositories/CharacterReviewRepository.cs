@@ -1,4 +1,4 @@
-﻿using BookProject.Data;
+using BookProject.Data;
 using BookProject.Helpers;
 using BookProject.Interfaces;
 using BookProject.Models;
@@ -64,9 +64,10 @@ namespace BookProject.Repositories
             return review;
         }
 
-        public async Task<CharacterReview?> UpdateReviewAsync(int id, CharacterReviewUpdateDTO dto)
+        public async Task<CharacterReview?> UpdateReviewAsync(int id, int userId, CharacterReviewUpdateDTO dto)
         {
-            var existing = await _context.CharacterReviews.FirstOrDefaultAsync(r => r.CharacterReviewId == id);
+            var existing = await _context.CharacterReviews
+                .FirstOrDefaultAsync(r => r.CharacterReviewId == id && r.UserId == userId);
 
             if (existing == null) return null;
 
@@ -77,9 +78,10 @@ namespace BookProject.Repositories
             return existing;
         }
 
-        public async Task<CharacterReview?> DeleteReviewAsync(int id)
+        public async Task<CharacterReview?> DeleteReviewAsync(int id, int userId)
         {
-            var review = await _context.CharacterReviews.FindAsync(id);
+            var review = await _context.CharacterReviews
+                .FirstOrDefaultAsync(r => r.CharacterReviewId == id && r.UserId == userId);
 
             if (review == null) return null;
 

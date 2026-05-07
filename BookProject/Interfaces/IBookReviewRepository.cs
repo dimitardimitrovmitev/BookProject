@@ -1,4 +1,4 @@
-﻿using BookProject.Helpers;
+using BookProject.Helpers;
 using BookProject.Models;
 using BookProject.QueryObjects;
 using static BookProject.DTOs.BookReviewDTOs;
@@ -11,7 +11,7 @@ namespace BookProject.Interfaces
         Task<BookReview?> GetReviewByIdAsync(int id);
         Task<List<BookReview>> GetReviewsByBookIdAsync(int bookId);
         Task<BookReview> CreateReviewAsync(BookReview review);
-        Task<BookReview?> UpdateReviewAsync(int id, BookReviewUpdateDTO dto);
-        Task<BookReview?> DeleteReviewAsync(int id);
+        Task<BookReview?> UpdateReviewAsync(int id, int userId, BookReviewUpdateDTO dto);
+        Task<BookReview?> DeleteReviewAsync(int id, int userId);
     }
 }

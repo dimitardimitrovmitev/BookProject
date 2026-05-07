@@ -1,4 +1,4 @@
-﻿using BookProject.Interfaces;
+using BookProject.Interfaces;
 using BookProject.Mappers;
 using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
@@ -57,7 +57,7 @@ namespace BookProject.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReview([FromRoute] int id, [FromBody] CharacterReviewUpdateDTO dto)
         {
-            var updated = await _reviewRepo.UpdateReviewAsync(id, dto);
+            var updated = await _reviewRepo.UpdateReviewAsync(id, GetCurrentUserId(), dto);
             if (updated == null) return NotFound();
             return Ok(updated.ToReadDTO());
         }
@@ -65,7 +65,7 @@ namespace BookProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview([FromRoute] int id)
         {
-            var deleted = await _reviewRepo.DeleteReviewAsync(id);
+            var deleted = await _reviewRepo.DeleteReviewAsync(id, GetCurrentUserId());
             if (deleted == null) return NotFound();
             return NoContent();
         }

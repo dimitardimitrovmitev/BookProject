@@ -8,14 +8,13 @@ namespace BookProject.Data
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
             : base(options) { }
 
-        // Entities
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<Character> Characters { get; set; } = null!;
         public DbSet<Scene> Scenes { get; set; } = null!;
         public DbSet<SceneCharacter> SceneCharacters { get; set; } = null!;
         public DbSet<UserBook> UserBooks { get; set; } = null!;
-        public DbSet<BookReview> BookReviews { get; set; } = null!;        // ← add this
+        public DbSet<BookReview> BookReviews { get; set; } = null!;
         public DbSet<CharacterReview> CharacterReviews { get; set; } = null!;
         public DbSet<ImageGeneration> ImageGenerations { get; set; } = null!;
         public DbSet<Report> Reports { get; set; } = null!;
@@ -24,6 +23,11 @@ namespace BookProject.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // USER - default role
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasDefaultValue("User");
 
             // USER → SCENE
             modelBuilder.Entity<Scene>()
@@ -55,7 +59,7 @@ namespace BookProject.Data
 
             // SCENECHARACTER many-to-many
             modelBuilder.Entity<SceneCharacter>()
-                .HasKey(sc => new { sc.SceneId, sc.CharacterId }); // composite key
+                .HasKey(sc => new { sc.SceneId, sc.CharacterId });
 
             modelBuilder.Entity<SceneCharacter>()
                 .HasOne(sc => sc.Scene)
@@ -66,7 +70,7 @@ namespace BookProject.Data
                 .HasOne(sc => sc.Character)
                 .WithMany(c => c.SceneCharacters)
                 .HasForeignKey(sc => sc.CharacterId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
 
             // USERBOOK (many-to-many join with composite key)
             modelBuilder.Entity<UserBook>()
@@ -92,8 +96,6 @@ namespace BookProject.Data
                 .HasIndex(cr => new { cr.UserId, cr.CharacterId })
                 .IsUnique();
 
-
-
             modelBuilder.Entity<ImageGenerationCharacter>()
                 .HasKey(igc => new { igc.ImageGenerationId, igc.CharacterId });
 
@@ -106,7 +108,7 @@ namespace BookProject.Data
                 .HasOne(igc => igc.Character)
                 .WithMany(c => c.ImageGenerationCharacters)
                 .HasForeignKey(igc => igc.CharacterId)
-                .OnDelete(DeleteBehavior.NoAction); // avoid cascade conflicts
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
