@@ -1,4 +1,4 @@
-﻿using BookProject.Models;
+using BookProject.Models;
 using static BookProject.DTOs.BookReviewDTOs;
 
 namespace BookProject.Mappers
@@ -13,7 +13,8 @@ namespace BookProject.Mappers
                 BookId = review.BookId,
                 UserId = review.UserId,
                 ReviewText = review.ReviewText,
-                Rating = review.Rating
+                Rating = review.Rating,
+                CreatedAt = review.CreatedAt
             };
         }
 

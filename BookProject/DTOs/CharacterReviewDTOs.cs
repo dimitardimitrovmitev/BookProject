@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookProject.DTOs
 {
@@ -11,6 +11,7 @@ namespace BookProject.DTOs
             public int UserId { get; set; }
             public string ReviewText { get; set; } = null!;
             public int Rating { get; set; }
+            public DateTime CreatedAt { get; set; }
         }
 
         public class CharacterReviewCreateDTO
