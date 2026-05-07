@@ -1,9 +1,10 @@
 using BookProject.Data;
 using BookProject.Interfaces;
+using BookProject.Middleware;
 using BookProject.Repositories;
 using BookProject.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -83,6 +84,9 @@ builder.Services.AddHttpClient<ImageGenerationService>();
 
 
 var app = builder.Build();
+
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
