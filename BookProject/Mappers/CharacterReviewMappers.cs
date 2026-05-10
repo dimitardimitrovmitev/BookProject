@@ -13,7 +13,13 @@ namespace BookProject.Mappers
                 CharacterId = review.CharacterId,
                 UserId = review.UserId,
                 ReviewText = review.ReviewText,
-                Rating = review.Rating,
+                DepthComplexity = review.DepthComplexity,
+                CharacterDevelopment = review.CharacterDevelopment,
+                ConsistencyBelievability = review.ConsistencyBelievability,
+                ImpactOnStory = review.ImpactOnStory,
+                Memorability = review.Memorability,
+                OverallRating = review.OverallRating,
+                AiImageUrl = review.AiImageUrl,
                 CreatedAt = review.CreatedAt
             };
         }
@@ -25,7 +31,13 @@ namespace BookProject.Mappers
                 CharacterId = dto.CharacterId,
                 UserId = userId,
                 ReviewText = dto.ReviewText,
-                Rating = dto.Rating
+                DepthComplexity = dto.DepthComplexity,
+                CharacterDevelopment = dto.CharacterDevelopment,
+                ConsistencyBelievability = dto.ConsistencyBelievability,
+                ImpactOnStory = dto.ImpactOnStory,
+                Memorability = dto.Memorability,
+                OverallRating = (dto.DepthComplexity + dto.CharacterDevelopment + dto.ConsistencyBelievability + dto.ImpactOnStory + dto.Memorability) / 5f,
+                AiImageUrl = dto.AiImageUrl
             };
         }
     }

@@ -27,7 +27,7 @@ namespace BookProject.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userRepo.GetAllUsersAsync();
-            return Ok(users.Select(u => u.ToReadDTO()));
+            return Ok(users.Select(u => u.ToPrivateReadDTO()));
         }
 
         [HttpGet("{id}")]
@@ -36,7 +36,7 @@ namespace BookProject.Controllers
         {
             var user = await _userRepo.GetUserByIdAsync(id);
             if (user == null) return NotFound();
-            return Ok(user.ToReadDTO());
+            return Ok(user.ToPrivateReadDTO());
         }
 
         [HttpGet("me")]
@@ -44,7 +44,7 @@ namespace BookProject.Controllers
         {
             var user = await _userRepo.GetUserByIdAsync(GetCurrentUserId());
             if (user == null) return NotFound();
-            return Ok(user.ToReadDTO());
+            return Ok(user.ToPrivateReadDTO());
         }
 
         [HttpPut("me")]
@@ -55,7 +55,7 @@ namespace BookProject.Controllers
             if (error != null) return BadRequest(error);
             if (user == null) return NotFound();
 
-            return Ok(user.ToReadDTO());
+            return Ok(user.ToPrivateReadDTO());
         }
 
         [HttpPut("{id}/promote")]
@@ -64,7 +64,7 @@ namespace BookProject.Controllers
         {
             var user = await _userRepo.PromoteToAdminAsync(id);
             if (user == null) return NotFound();
-            return Ok(user.ToReadDTO());
+            return Ok(user.ToPrivateReadDTO());
         }
 
         [HttpPut("{id}/demote")]
@@ -73,7 +73,7 @@ namespace BookProject.Controllers
         {
             var user = await _userRepo.DemoteToUserAsync(id);
             if (user == null) return NotFound();
-            return Ok(user.ToReadDTO());
+            return Ok(user.ToPrivateReadDTO());
         }
     }
 }

@@ -4,11 +4,18 @@ namespace BookProject.DTOs
 {
     public static class UserDTOs
     {
-        public class UserReadDTO
+        public class UserReadDTO 
+        {
+            public int UserId { get; set; }
+            public string Username { get; set; } = null!;
+        }
+
+        public class UserPrivateReadDTO  
         {
             public int UserId { get; set; }
             public string Username { get; set; } = null!;
             public string Email { get; set; } = null!;
+            public string Role { get; set; } = null!;
         }
 
         public class UserUpdateDTO

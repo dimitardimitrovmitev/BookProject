@@ -24,6 +24,7 @@ namespace BookProject.Controllers
             int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUserBooks([FromQuery] UserBookQueryObject query)
         {
             var result = await _userBookRepo.GetAllUserBooksAsync(query);

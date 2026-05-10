@@ -47,6 +47,7 @@ namespace BookProject.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetScenesByUserId([FromRoute] int userId)
         {
             var scenes = await _sceneRepo.GetScenesByUserIdAsync(userId);

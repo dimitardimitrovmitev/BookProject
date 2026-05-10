@@ -35,8 +35,12 @@ namespace BookProject.Repositories
 
             reviews = query.SortBy switch
             {
-                CharacterReviewSortBy.Rating => query.SortDescending ? reviews.OrderByDescending(r => r.Rating) : reviews.OrderBy(r => r.Rating),
-                _ => query.SortDescending ? reviews.OrderByDescending(r => r.CreatedAt) : reviews.OrderBy(r => r.CreatedAt),
+                CharacterReviewSortBy.Rating => query.SortDescending
+                    ? reviews.OrderByDescending(r => r.OverallRating)
+                    : reviews.OrderBy(r => r.OverallRating),
+                _ => query.SortDescending
+                    ? reviews.OrderByDescending(r => r.CreatedAt)
+                    : reviews.OrderBy(r => r.CreatedAt),
             };
 
             var totalCount = await reviews.CountAsync();
@@ -75,7 +79,13 @@ namespace BookProject.Repositories
             if (existing == null) return null;
 
             existing.ReviewText = dto.ReviewText;
-            existing.Rating = dto.Rating;
+            existing.DepthComplexity = dto.DepthComplexity;
+            existing.CharacterDevelopment = dto.CharacterDevelopment;
+            existing.ConsistencyBelievability = dto.ConsistencyBelievability;
+            existing.ImpactOnStory = dto.ImpactOnStory;
+            existing.Memorability = dto.Memorability;
+            existing.OverallRating = (dto.DepthComplexity + dto.CharacterDevelopment + dto.ConsistencyBelievability + dto.ImpactOnStory + dto.Memorability) / 5f;
+            existing.AiImageUrl = dto.AiImageUrl;
 
             await _context.SaveChangesAsync();
             return existing;

@@ -10,7 +10,15 @@ namespace BookProject.DTOs
             public int CharacterId { get; set; }
             public int UserId { get; set; }
             public string ReviewText { get; set; } = null!;
-            public int Rating { get; set; }
+
+            public float DepthComplexity { get; set; }
+            public float CharacterDevelopment { get; set; }
+            public float ConsistencyBelievability { get; set; }
+            public float ImpactOnStory { get; set; }
+            public float Memorability { get; set; }
+            public float OverallRating { get; set; }
+
+            public string? AiImageUrl { get; set; }
             public DateTime CreatedAt { get; set; }
         }
 
@@ -23,8 +31,22 @@ namespace BookProject.DTOs
             [StringLength(1000, MinimumLength = 5, ErrorMessage = "Review text must be between 5 and 1000 characters.")]
             public string ReviewText { get; set; } = null!;
 
-            [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
-            public int Rating { get; set; }
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float DepthComplexity { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float CharacterDevelopment { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float ConsistencyBelievability { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float ImpactOnStory { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float Memorability { get; set; }
+
+            public string? AiImageUrl { get; set; }
         }
 
         public class CharacterReviewUpdateDTO
@@ -33,8 +55,22 @@ namespace BookProject.DTOs
             [StringLength(1000, MinimumLength = 5, ErrorMessage = "Review text must be between 5 and 1000 characters.")]
             public string ReviewText { get; set; } = null!;
 
-            [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
-            public int Rating { get; set; }
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float DepthComplexity { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float CharacterDevelopment { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float ConsistencyBelievability { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float ImpactOnStory { get; set; }
+
+            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1.0 and 5.0.")]
+            public float Memorability { get; set; }
+
+            public string? AiImageUrl { get; set; }
         }
     }
 }

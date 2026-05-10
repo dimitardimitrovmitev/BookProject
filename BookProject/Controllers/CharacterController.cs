@@ -13,12 +13,10 @@ namespace BookProject.Controllers
     [ApiController]
     public class CharacterController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
         private readonly ICharacterRepository _characterRepo;
 
-        public CharacterController(ApplicationDBContext context, ICharacterRepository characterRepo)
+        public CharacterController(ICharacterRepository characterRepo)
         {
-            _context = context;
             _characterRepo = characterRepo;
         }
 
@@ -38,7 +36,7 @@ namespace BookProject.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCharacterByIdAsync([FromRoute] int id)
+        public async Task<IActionResult> GetCharacterById([FromRoute] int id)
         {
             var character = await _characterRepo.GetCharacterByIdAsync(id);
             if (character == null) return NotFound();

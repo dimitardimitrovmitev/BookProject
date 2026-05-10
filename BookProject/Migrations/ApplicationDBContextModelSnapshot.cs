@@ -125,14 +125,32 @@ namespace BookProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CharacterReviewId"));
 
+                    b.Property<string>("AiImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("CharacterDevelopment")
+                        .HasColumnType("real");
+
                     b.Property<int>("CharacterId")
                         .HasColumnType("int");
+
+                    b.Property<float>("ConsistencyBelievability")
+                        .HasColumnType("real");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<float>("DepthComplexity")
+                        .HasColumnType("real");
+
+                    b.Property<float>("ImpactOnStory")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Memorability")
+                        .HasColumnType("real");
+
+                    b.Property<float>("OverallRating")
+                        .HasColumnType("real");
 
                     b.Property<string>("ReviewText")
                         .IsRequired()
