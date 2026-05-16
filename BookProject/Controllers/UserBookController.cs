@@ -3,6 +3,7 @@ using BookProject.Mappers;
 using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Security.Claims;
 using static BookProject.DTOs.UserBookDTOs;
 
@@ -56,6 +57,7 @@ namespace BookProject.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetBooksByUser([FromRoute] int userId, [FromQuery] UserBookQueryObject query)
         {
             var result = await _userBookRepo.GetBooksByUserIdAsync(userId, query);
@@ -74,6 +76,7 @@ namespace BookProject.Controllers
         }
 
         [HttpGet("user/{userId}/book/{bookId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserBook([FromRoute] int userId, [FromRoute] int bookId)
         {
             var userBook = await _userBookRepo.GetUserBookAsync(userId, bookId);

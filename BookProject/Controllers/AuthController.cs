@@ -7,7 +7,7 @@ using static BookProject.DTOs.AuthDTOs;
 namespace BookProject.Controllers
 {
     [ApiController]
-    [Route("api/auth")]
+    [Route("auth")]
     public class AuthController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
