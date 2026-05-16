@@ -80,7 +80,7 @@ namespace BookProject.Repositories
             existingBook.Description = bookDto.Description;
             existingBook.PublishedDate = bookDto.PublishedDate;
             existingBook.OpenLibraryId = bookDto.OpenLibraryId;
-
+            existingBook.CoverUrl = bookDto.CoverUrl;
             await _context.SaveChangesAsync();
             return existingBook;
         }

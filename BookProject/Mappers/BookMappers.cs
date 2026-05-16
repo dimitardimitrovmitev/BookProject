@@ -15,7 +15,8 @@ namespace BookProject.Mappers
                 Author = book.Author,
                 Description = book.Description,
                 PublishedDate = book.PublishedDate,
-                OpenLibraryId = book.OpenLibraryId
+                OpenLibraryId = book.OpenLibraryId,
+                CoverUrl = book.CoverUrl
             };
         }
 
@@ -28,7 +29,8 @@ namespace BookProject.Mappers
                 Author = book.Author,
                 Description = book.Description,
                 PublishedDate = book.PublishedDate,
-                OpenLibraryId = book.OpenLibraryId
+                OpenLibraryId = book.OpenLibraryId,
+                CoverUrl = book.CoverUrl
             };
         }
 

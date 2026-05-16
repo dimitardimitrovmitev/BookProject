@@ -23,20 +23,20 @@ namespace BookProject.Controllers
             int.Parse(User.FindFirstValue("userId")!);
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userRepo.GetAllUsersAsync();
-            return Ok(users.Select(u => u.ToPrivateReadDTO()));
+            return Ok(users.Select(u => u.ToReadDTO()));
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _userRepo.GetUserByIdAsync(id);
             if (user == null) return NotFound();
-            return Ok(user.ToPrivateReadDTO());
+            return Ok(user.ToReadDTO());
         }
 
         [HttpGet("me")]

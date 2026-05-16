@@ -57,7 +57,7 @@ namespace BookProject.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> GetBooksByUser([FromRoute] int userId, [FromQuery] UserBookQueryObject query)
         {
             var result = await _userBookRepo.GetBooksByUserIdAsync(userId, query);

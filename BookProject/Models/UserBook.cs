@@ -3,9 +3,9 @@
     public enum ReadingStatus
     {
         WantToRead,
-        CurrentlyReading,
+        Reading,
         Read,
-        Abandoned
+        DNF
     }
 
     public class UserBook

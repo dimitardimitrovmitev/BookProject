@@ -20,9 +20,12 @@ namespace BookProject.DTOs
 
             public DateTime PublishedDate { get; set; } = DateTime.Now;
 
-            [Required]
-            [StringLength(50, MinimumLength = 1, ErrorMessage = "OpenLibraryId must be between 1 and 50 characters.")]
-            public string OpenLibraryId { get; set; } = null!;
+            
+            [StringLength(50)]
+            public string? OpenLibraryId { get; set; }
+
+            public string? CoverUrl { get; set; }
+
         }
 
         public class BookReadDTO
@@ -33,6 +36,8 @@ namespace BookProject.DTOs
             public string Description { get; set; } = null!;
             public DateTime PublishedDate { get; set; }
             public string OpenLibraryId { get; set; } = null!;
+
+            public string? CoverUrl { get; set; } = null!;
         }
 
         public class BookOpenLibraryDTO
@@ -57,9 +62,10 @@ namespace BookProject.DTOs
 
             public DateTime PublishedDate { get; set; } = DateTime.Now;
 
-            [Required]
-            [StringLength(50, MinimumLength = 1, ErrorMessage = "OpenLibraryId must be between 1 and 50 characters.")]
-            public string OpenLibraryId { get; set; } = null!;
+            [StringLength(50)]
+            public string? OpenLibraryId { get; set; }
+
+            public string? CoverUrl { get; set; }
         }
     }
 }

@@ -11,7 +11,10 @@
 
         public DateTime PublishedDate { get; set; } = DateTime.Now;
 
-        public string OpenLibraryId { get; set; } = null!;
+        public string? OpenLibraryId { get; set; } = null!;
+
+        public string? CoverUrl { get; set; }
+
 
         public ICollection<Character> Characters { get; set; } = new List<Character>();
 
