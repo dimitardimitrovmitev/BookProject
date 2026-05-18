@@ -92,7 +92,6 @@ namespace BookProject.Repositories
             {
                 UserBookSortBy.Author => filter.SortDescending ? query.OrderByDescending(ub => ub.Book.Author) : query.OrderBy(ub => ub.Book.Author),
                 UserBookSortBy.ReadDate => filter.SortDescending ? query.OrderByDescending(ub => ub.ReadDate) : query.OrderBy(ub => ub.ReadDate),
-                UserBookSortBy.UserRating => filter.SortDescending ? query.OrderByDescending(ub => ub.UserRating) : query.OrderBy(ub => ub.UserRating),
                 _ => filter.SortDescending ? query.OrderByDescending(ub => ub.Book.Title) : query.OrderBy(ub => ub.Book.Title),
             };
         }
@@ -119,24 +118,10 @@ namespace BookProject.Repositories
 
             userBook.Status = dto.Status;
 
-            // Automatically manage ReadDate based on status
             if (dto.Status == ReadingStatus.Read)
                 userBook.ReadDate = DateTime.UtcNow;
             else
                 userBook.ReadDate = null;
-
-            await _context.SaveChangesAsync();
-            return userBook;
-        }
-
-        public async Task<UserBook?> RateBookAsync(int userId, int bookId, UserBookRateDTO dto)
-        {
-            var userBook = await _context.UserBooks
-                .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BookId == bookId);
-
-            if (userBook == null) return null;
-
-            userBook.UserRating = dto.UserRating;
 
             await _context.SaveChangesAsync();
             return userBook;

@@ -5,7 +5,7 @@ namespace BookProject.Models
         public int BookReviewId { get; set; }
         public int BookId { get; set; }
         public int UserId { get; set; }
-        public string ReviewText { get; set; } = null!;
+        public string? ReviewText { get; set; }
         public int Rating { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

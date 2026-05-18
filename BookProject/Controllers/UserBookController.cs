@@ -3,7 +3,6 @@ using BookProject.Mappers;
 using BookProject.QueryObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Security.Claims;
 using static BookProject.DTOs.UserBookDTOs;
 
@@ -104,15 +103,6 @@ namespace BookProject.Controllers
         public async Task<IActionResult> UpdateStatus([FromRoute] int bookId, [FromBody] UserBookUpdateStatusDTO dto)
         {
             var updated = await _userBookRepo.UpdateStatusAsync(GetCurrentUserId(), bookId, dto);
-            if (updated == null) return NotFound();
-            return Ok(updated.ToReadDTO());
-        }
-
-        [HttpPut("book/{bookId}/rate")]
-        public async Task<IActionResult> RateBook([FromRoute] int bookId, [FromBody] UserBookRateDTO dto)
-        {
-            var userId = GetCurrentUserId();
-            var updated = await _userBookRepo.RateBookAsync(userId, bookId, dto);
             if (updated == null) return NotFound();
             return Ok(updated.ToReadDTO());
         }

@@ -74,7 +74,6 @@ namespace BookProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ReviewText")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
@@ -344,9 +343,6 @@ namespace BookProject.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<float?>("UserRating")
-                        .HasColumnType("real");
 
                     b.HasKey("UserId", "BookId");
 

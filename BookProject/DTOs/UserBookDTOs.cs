@@ -17,19 +17,12 @@ namespace BookProject.DTOs
             public int BookId { get; set; }
             public ReadingStatus Status { get; set; }
             public DateTime? ReadDate { get; set; }
-            public float? UserRating { get; set; }
         }
 
         public class UserBookUpdateStatusDTO
         {
             [Required]
             public ReadingStatus Status { get; set; }
-        }
-
-        public class UserBookRateDTO
-        {
-            [Range(1.0, 5.0, ErrorMessage = "Rating must be between 1 and 5.")]
-            public float UserRating { get; set; }
         }
     }
 }

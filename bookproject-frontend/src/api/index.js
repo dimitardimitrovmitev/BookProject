@@ -33,7 +33,6 @@ export const userBooksApi = {
   getByUser: (userId, params) => client.get(`/userbook/user/${userId}`, { params }),
   add: (data) => client.post('/userbook', data),
   updateStatus: (bookId, data) => client.put(`/userbook/book/${bookId}/status`, data),
-  rate: (bookId, data) => client.put(`/userbook/book/${bookId}/rate`, data),
   remove: (bookId) => client.delete(`/userbook/book/${bookId}`),
 }
 

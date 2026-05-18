@@ -11,7 +11,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers(mvcOptions =>
+    mvcOptions.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+.AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });

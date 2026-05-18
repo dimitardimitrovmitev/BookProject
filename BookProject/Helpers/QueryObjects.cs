@@ -3,10 +3,6 @@ using BookProject.Models;
 
 namespace BookProject.QueryObjects
 {
-    // =====================================================
-    // Sort Enums
-    // =====================================================
-
     public enum BookSortBy
     {
         Title,
@@ -48,18 +44,13 @@ namespace BookProject.QueryObjects
     {
         Title,
         Author,
-        ReadDate,
-        UserRating
+        ReadDate
     }
 
     public enum ReportSortBy
     {
         ReportedAt
     }
-
-    // =====================================================
-    // Query Objects
-    // =====================================================
 
     public class BookQueryObject : QueryObject
     {
@@ -100,7 +91,7 @@ namespace BookProject.QueryObjects
     {
         public int? BookId { get; set; }
         public string? BookTitle { get; set; }
-        public int? UserId { get; set; }  // add this
+        public int? UserId { get; set; }
         public BookReviewSortBy SortBy { get; set; } = BookReviewSortBy.CreatedAt;
     }
 
@@ -108,7 +99,7 @@ namespace BookProject.QueryObjects
     {
         public int? CharacterId { get; set; }
         public string? CharacterName { get; set; }
-        public int? UserId { get; set; }  // add this
+        public int? UserId { get; set; }
         public CharacterReviewSortBy SortBy { get; set; } = CharacterReviewSortBy.CreatedAt;
     }
 

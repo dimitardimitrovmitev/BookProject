@@ -28,12 +28,17 @@
                 <option value="Read">Read</option>
                 <option value="DNF">DNF</option>
               </select>
-              <button class="btn btn-secondary btn-sm" @click="showRate = true">Rate</button>
-              <button class="btn btn-ghost btn-sm" @click="removeFromLibrary">Remove</button>
+              <div class="inline-stars">
+                <StarInput v-model="currentRating" @update:modelValue="openReviewModalWithRating" />
+              </div>
+              <button class="btn btn-ghost btn-sm" @click="removeFromLibrary">Remove from Library</button>
             </div>
+            <button class="btn btn-secondary" @click="openReviewModal">
+              {{ userReview ? 'Edit Review' : 'Write Review' }}
+            </button>
           </template>
-          <button class="btn btn-secondary" @click="showReviewModal = true">Write Review</button>
           <template v-if="authStore.isAdmin">
+            <span class="action-separator">|</span>
             <button class="btn btn-ghost" @click="showEdit = true">Edit</button>
           </template>
         </div>
@@ -79,23 +84,9 @@
     </section>
 
     <!-- Modals -->
-    <BookReviewModal :show="showReviewModal" :review="editingReview" :loading="reviewLoading" @close="closeReview" @submit="submitReview" />
+    <BookReviewModal :show="showReviewModal" :review="editingReview" :pending-rating="pendingRating" :loading="reviewLoading" @close="closeReview" @submit="submitReview" />
     <BookFormModal :show="showEdit" :book="book" :loading="editLoading" @close="showEdit=false" @submit="handleEdit" />
-    <Teleport to="body">
-      <div v-if="showRate" class="modal-overlay" @click.self="showRate=false">
-        <div class="modal" style="max-width:320px">
-          <div class="modal-header"><h3>Rate this Book</h3><button class="btn-icon" @click="showRate=false">✕</button></div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px 0">
-            <StarInput v-model="rateValue" />
-            <span class="text-muted">{{ rateValue ? `${rateValue} / 5` : 'Pick a rating' }}</span>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" @click="showRate=false">Cancel</button>
-            <button class="btn btn-primary" :disabled="!rateValue" @click="submitRate">Save Rating</button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+
   </div>
 
   <div v-else-if="notFound" class="empty-state" style="padding:80px">
@@ -135,14 +126,30 @@ const reviews = ref([])
 const userBook = ref(null)
 const libraryLoading = ref(false)
 const statusValue = ref('WantToRead')
-const showRate = ref(false)
-const rateValue = ref(0)
 
 const showReviewModal = ref(false)
 const editingReview = ref(null)
+const pendingRating = ref(0)
 const reviewLoading = ref(false)
 const showEdit = ref(false)
 const editLoading = ref(false)
+
+const userReview = computed(() => reviews.value.find(r => r.userId === authStore.userId) || null)
+const currentRating = computed({
+  get: () => userReview.value?.rating ?? 0,
+  set: () => {}
+})
+
+function openReviewModal() {
+  editingReview.value = userReview.value || null
+  showReviewModal.value = true
+}
+
+function openReviewModalWithRating(val) {
+  editingReview.value = userReview.value ? { ...userReview.value, rating: val } : null
+  pendingRating.value = val
+  showReviewModal.value = true
+}
 
 const coverUrl = computed(() => {
   if (imgError.value) return book.value?.coverUrl || null
@@ -174,7 +181,7 @@ async function fetchAll() {
   try {
     const my = await userBooksApi.getMy({ pageSize: 200 })
     const found = (my.data.items || []).find(ub => ub.bookId === parseInt(id))
-    if (found) { userBook.value = found; statusValue.value = found.status; rateValue.value = found.userRating || 0 }
+    if (found) { userBook.value = found; statusValue.value = found.status }
   } catch {}
 }
 
@@ -194,12 +201,7 @@ async function updateStatus() {
   } catch { toast.error('Failed to update status') }
 }
 
-async function submitRate() {
-  try {
-    const { data } = await userBooksApi.rate(book.value.id, { userRating: rateValue.value })
-    userBook.value = data; showRate.value = false; toast.success('Rating saved!')
-  } catch { toast.error('Failed to save rating') }
-}
+
 
 async function removeFromLibrary() {
   try {
@@ -208,13 +210,13 @@ async function removeFromLibrary() {
   } catch { toast.error('Failed to remove') }
 }
 
-function closeReview() { showReviewModal.value = false; editingReview.value = null }
+function closeReview() { showReviewModal.value = false; editingReview.value = null; pendingRating.value = 0 }
 function editReview(r) { editingReview.value = r; showReviewModal.value = true }
 
 async function submitReview(formData) {
   reviewLoading.value = true
   try {
-    if (editingReview.value) {
+    if (editingReview.value?.bookReviewId) {
       await bookReviewsApi.update(editingReview.value.bookReviewId, formData)
       toast.success('Review updated')
     } else {
@@ -264,5 +266,7 @@ onMounted(fetchAll)
 .detail-section h2 { margin-bottom: 4px; }
 .review-card { padding: 16px; }
 .review-header { display: flex; align-items: center; justify-content: space-between; }
+.inline-stars { display: flex; align-items: center; }
+.action-separator { color: var(--border); font-size: 1.2rem; margin: 0 2px; user-select: none; }
 @media (max-width: 700px) { .book-hero { flex-direction: column; } .book-cover-large { width: 140px; } }
 </style>

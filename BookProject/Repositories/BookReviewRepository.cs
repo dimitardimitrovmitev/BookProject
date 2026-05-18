@@ -67,8 +67,15 @@ namespace BookProject.Repositories
                 .ToListAsync();
         }
 
+       
         public async Task<BookReview> CreateReviewAsync(BookReview review)
         {
+            bool exists = await _context.BookReviews
+                .AnyAsync(r => r.UserId == review.UserId && r.BookId == review.BookId);
+
+            if (exists)
+                throw new InvalidOperationException("You have already reviewed this book.");
+
             await _context.BookReviews.AddAsync(review);
             await _context.SaveChangesAsync();
             return review;
